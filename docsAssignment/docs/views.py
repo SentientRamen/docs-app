@@ -52,5 +52,14 @@ def logout_page(request):
 
 @login_required(login_url='login')
 def home(request):
-    context = {}
+    users = ''
+    document = ''
+    current_user = request.user
+    if request.method == 'POST':
+        document = request.POST.get('document')
+        users = request.POST.get('users')
+    context = {'users': users,
+               'document': document,
+               'user': current_user
+               }
     return render(request, 'docs/dashboard.html', context)
