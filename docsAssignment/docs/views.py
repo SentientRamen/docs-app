@@ -52,14 +52,11 @@ def logout_page(request):
 
 @login_required(login_url='login')
 def home(request):
-    users = ''
-    document = ''
-    current_user = request.user
-    if request.method == 'POST':
-        document = request.POST.get('document')
-        users = request.POST.get('users')
-    context = {'users': users,
-               'document': document,
-               'user': current_user
-               }
-    return render(request, 'docs/dashboard.html', context)
+    return render(request, 'docs/dashboard.html')
+
+
+@login_required(login_url='login')
+def room(request, room_name):
+    return render(request, 'docs/room.html', {
+        'room_name': room_name
+    })

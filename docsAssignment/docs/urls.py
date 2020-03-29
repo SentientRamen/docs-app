@@ -7,4 +7,5 @@ urlpatterns = [
     path('login/', views.login_page, name="login"),
     path('logout/', views.logout_page, name="logout"),
     path('', views.home, name="home"),
+    path('<str:room_name>/', views.room, name='room'),
 ]
