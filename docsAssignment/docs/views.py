@@ -64,7 +64,8 @@ def room(request, room_name):
         auth = Authorized.objects.filter(user=request.user,document=doc_name[0])
         if auth and auth[0].authorized:
             return render(request, 'docs/room.html', {
-                'room_name': room_name
+                'room_name': room_name,
+                'user_name': request.user.username
             })
         else:
             return defaults.permission_denied(request, '',
