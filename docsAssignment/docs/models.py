@@ -15,5 +15,5 @@ class Authorized(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     document = models.ForeignKey(Documents, on_delete=models.CASCADE)
     last_edited = models.DateField()
-    authorized = models.BooleanField(default=False)
+    authorized = models.BooleanField(default=True)
 

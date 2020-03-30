@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CreateUserForm
+from .models import Authorized, Documents
+from django.views import defaults
 
 
 # Create your views here.
@@ -57,6 +59,15 @@ def home(request):
 
 @login_required(login_url='login')
 def room(request, room_name):
-    return render(request, 'docs/room.html', {
-        'room_name': room_name
-    })
+    doc_name = Documents.objects.filter(name=room_name)
+    if doc_name:
+        auth = Authorized.objects.filter(user=request.user,document=doc_name[0])
+        if auth and auth[0].authorized:
+            return render(request, 'docs/room.html', {
+                'room_name': room_name
+            })
+        else:
+            return defaults.permission_denied(request, '',
+                                              template_name='403.html')
+    else:
+        return defaults.page_not_found(request, '', template_name='404.html')
