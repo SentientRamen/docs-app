@@ -1,19 +1,17 @@
-<!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <title>Document</title>
-</head>
+{%  extends 'docs/main.html' %}
+
+{% block content %}
+
+
 <body>
 <textarea id="chat-log" cols="100" rows="20"></textarea><br>
 {{ room_name|json_script:"room-name" }}
 <script type="text/javascript">
     var user_name = "{{user_name}}";
     var online = [user_name];
-    var viewing = {};
+    var viewed = {};
     var curr_user = {};
-    viewing[user_name] = Date.now().toString();
+    viewed[user_name] = Date.now().toString();
 
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
@@ -37,19 +35,20 @@
         }
 
         // update time-stamp
-        viewing[name] = date;
+        viewed[name] = date;
 
         // remove
 
-        document.querySelector('#chat-log').value += (online + ' ' + viewing + '\n');
+        document.querySelector('#chat-log').value += (online + ' ' + viewed[online] + '\n');
+        console.log(viewed)
     };
 
     chatSocket.onclose = function (e) {
         console.error('Chat socket closed unexpectedly');
     };
 
-    window.setInterval(pingSocket, 10000);
-    window.setInterval(removeIdle, 10000);
+    window.setInterval(pingSocket, 1000);
+    window.setInterval(removeIdle, 1000);
 
     function pingSocket() {
         curr_user[user_name] = new Date().toString();
@@ -61,8 +60,8 @@
     function removeIdle() {
         for (index = 0; index < online.length; index++) {
             now = new Date().getTime();
-            date = new Date(viewing[online[index]]).getTime();
-            if (now - date > 120000) {
+            date = new Date(viewed[online[index]]).getTime();
+            if (now - date > 10000) {
                 online.splice(index, 1);
                 console.log(online)
             }
@@ -70,4 +69,5 @@
     }
 </script>
 </body>
-</html>
+
+{% endblock %}
