@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import CreateUserForm
 from .models import Authorized, Documents
 from django.views import defaults
+from .orm_helper import update_visited
 
 
 # Create your views here.
@@ -61,8 +62,7 @@ def home(request):
 def room(request, room_name):
     doc_name = Documents.objects.filter(name=room_name)
     if doc_name:
-        auth = Authorized.objects.filter(user=request.user,document=doc_name[0])
-        if auth and auth[0].authorized:
+        if update_visited(request.user, room_name):
             return render(request, 'docs/room.html', {
                 'room_name': room_name,
                 'user_name': request.user.username

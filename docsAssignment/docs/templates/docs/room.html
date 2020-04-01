@@ -1,19 +1,54 @@
 {%  extends 'docs/main.html' %}
 
 {% block content %}
-
+<style>
+    .circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 40px;
+  color: #fff;
+  line-height: 50px;
+  text-align: center;
+  background: #000
+}
+</style>
 
 <body>
-<textarea id="chat-log" cols="100" rows="20"></textarea><br>
+<div class="row" id="online-status"></div>
+<div class="row">
+    <div class="col-md-8">
+        <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    </div>
+    <div class="col-md-1" id="online">
+    </div>
+    <div class="col-md-3" id="view-history">
+        <div class="row">
+            <span class="history" id="history-{{user_name}}"></span>
+        </div>
+    </div>
+</div>
+
 {{ room_name|json_script:"room-name" }}
 <script type="text/javascript">
     var user_name = "{{user_name}}";
+    var letter = user_name[0].toUpperCase();
+    var colour = random_rgba();
     var online = [user_name];
     var viewed = {};
     var curr_user = {};
     viewed[user_name] = Date.now().toString();
+    online_elements = document.querySelector('#online');
+    history_elements = document.querySelector('#view-history');
 
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+    online_elements.innerHTML = '<div class="row" id="online-row-{{user_name}}">\n' +
+        '            <span class="circle" id="logo-{{user_name}}"></span>\n' +
+        '        </div>';
+    // history_elements.innerHTML = ''
+    document.querySelector('#logo-{{user_name}}').style.backgroundColor = colour;
+    document.querySelector('#logo-{{user_name}}').innerHTML = letter;
 
     const chatSocket = new WebSocket(
         'ws://'
@@ -26,21 +61,28 @@
     chatSocket.onmessage = function (e) {
         // obtain info from message
         const data = JSON.parse(e.data);
+        console.log(e.data);
         let name = data.message.name;
         let date = data.message[name];
+        let u_colour = data.message['colour'];
+        let u_letter = data.message['letter'];
 
         // insert new people
         if (!online.includes(name)) {
             online.push(name);
+            online_elements.innerHTML += '<div class="row" id="online-row-' + name + '">\n' +
+        '            <span class="circle" id="logo-' + name + '"></span>\n' +
+        '        </div>';
+            document.querySelector('#logo-' + name).style.backgroundColor = u_colour;
+            document.querySelector('#logo-' + name).innerHTML = u_letter;
         }
 
         // update time-stamp
         viewed[name] = date;
 
-        // remove
-
-        document.querySelector('#chat-log').value += (online + ' ' + viewed[online] + '\n');
-        console.log(viewed)
+        // document.querySelector('#chat-log').value += (online + ' ' + viewed[online] + '\n');
+        document.querySelector('#history-{{user_name}}').innerHTML = name + ': ' + viewed[name];
+        // console.log(viewed)
     };
 
     chatSocket.onclose = function (e) {
@@ -53,6 +95,9 @@
     function pingSocket() {
         curr_user[user_name] = new Date().toString();
         curr_user['name'] = user_name;
+        curr_user['colour'] = colour;
+        curr_user['letter'] = letter;
+        console.log(JSON.stringify(curr_user));
         chatSocket.send(JSON.stringify(curr_user));
     }
 
@@ -67,6 +112,12 @@
             }
         }
     }
+
+    // Random colour generator
+    function random_rgba() {
+    var o = Math.round, r = Math.random, s = 255;
+    return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+}
 </script>
 </body>
 
