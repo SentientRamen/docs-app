@@ -107,6 +107,8 @@
             now = new Date().getTime();
             date = new Date(viewed[online[index]]).getTime();
             if (now - date > 10000) {
+                row = document.querySelector('#online-row-'+online[index]);
+                row.parentNode.removeChild(row);
                 online.splice(index, 1);
                 console.log(online)
             }
