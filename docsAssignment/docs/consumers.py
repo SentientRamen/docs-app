@@ -20,12 +20,12 @@ class DocConsumer(WebsocketConsumer):
         )
 
         message = self.get_viewing_history()
-        message['m_type'] = 'viewing history'
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'message_type': 'viewing_history'
             }
         )
 
@@ -42,24 +42,24 @@ class DocConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json
-        message['m_type'] = 'ping'
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'message_type': 'ping'
             }
         )
 
     # Receive message from room group
     def chat_message(self, event):
-        message = event['message']
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
-            'message': message
+            'message': event['message'],
+            'message_type': event['message_type'],
         }))
 
     def get_viewing_history(self):

@@ -2,37 +2,107 @@
 
 {% block content %}
 <style>
+	@import url('https://fonts.googleapis.com/css?family=Raleway:300,400,700');
+	#online-title {
+		margin-left: 10px;
+		margin-top: 10px;
+		margin-bottom: 40px;
+		font-family: Raleway;
+		color: coral;
+
+	}
+
+	#online-users-container {
+		margin-top: 40px;
+		margin-left: 40px;
+		margin-right: 25px;
+	}
+
     .circle {
         width: 50px;
         height: 50px;
         border-radius: 50%;
-        font-size: 40px;
+        font-size: 25px;
         color: #fff;
         line-height: 50px;
         text-align: center;
         margin: 5px;
         background: #000;
+        position: relative;
+        margin-top: -20px;
+        opacity: 1;
+        cursor: pointer;
+        wi
     }
 
-    .history-title {
-        text-align: center;
+    #viewed-user-list {
+    	display: none;
     }
+
+    #history-title {
+        text-align: center;
+        margin-top: 8px;
+        margin-bottom: 8px;
+		border: 1px;
+		background-color: white;
+		box-shadow:none;
+		border-radius: 1px;
+		padding-left: 50px;
+		padding-right: 50px;
+		font-family: Raleway;
+		font-weight: 500;
+		border-style: solid;
+		color: steelblue;
+		border-color: steelblue;
+	    outline: none;
+    }
+
+	#history-title:hover{
+	    cursor: pointer;
+	    background-color: steelblue;
+	    color:white;
+	}
+
     .history {
         text-align: center;
     }
+    #document-container{
+    	margin-top: 20px;
+    }
+    .user-details{
+    	display: none;
+    	position: absolute;
+    	background-color: dimgray;
+    	border-radius: 1px;
+    	color: white;
+    	padding: 5px;
+    	margin-left: 40px;
+    	margin-top: -30px;
+    	z-index: 1;
+    	border-bottom-left-radius: 3px;
+    	opacity: 0.7;
+    }
+
+
 </style>
 
 <body>
 <div class="row" id="online-status"></div>
 <div class="row">
-    <div class="col-md-8">
-        <textarea id="chat-log" cols="100" rows="20"></textarea><br>
+    <div class="col-md-4" id="document-container">
+        <textarea id="chat-log" cols="50" rows="10"></textarea><br>
     </div>
-    <div class="col-md-1" id="online">
+    <div class="col-md-2" id="online-title">
+    	Currently Online
+    	<div id="online-users-container">
+    		<div id="online-users">
+    		</div>
+    	</div>
     </div>
     <div class="col-md-3" id="view-history">
         <div class="row">
-            <span class="history-title" id="history-title"> VIEWING HISTORY </span>
+            <button class="history-title" id="history-title" onclick="toggleShowViewedHistory()"> Show Viewing History </button>
+            	<div id="viewed-user-list"></div>
         </div>
     </div>
 </div>
@@ -46,31 +116,59 @@
     var viewed = {};
     var curr_user = {};
     viewed[user_name] = Date.now().toString();
-    online_elements = document.querySelector('#online');
-    history_elements = document.querySelector('#view-history');
+    online_elements = document.querySelector('#online-users');
+    history_elements = document.querySelector('#viewed-user-list');
 
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
-    online_elements.innerHTML = '<div class="row" id="online-row-{{user_name}}">\n' +
+    online_elements.innerHTML = `<div onmouseover="showUserDetails('${user_name}')" onmouseout="hideUserDetails('${user_name}')" class="row" id="online-row-{{user_name}}">\n` +
         '            <span class="circle" id="logo-{{user_name}}"></span>\n' +
         '        </div>';
     document.querySelector('#logo-{{user_name}}').style.backgroundColor = colour;
     document.querySelector('#logo-{{user_name}}').innerHTML = letter;
 
-    const chatSocket = new WebSocket(
-        'ws://'
-        + window.location.host
-        + '/ws/docs/'
-        + roomName
-        + '/'
-    );
+    // creating the user-detail div that will contain the username details of the user
+	createCustomUserDetailDiv(user_name);
+
+    const chatSocket = new WebSocket(`ws://${window.location.host}/ws/docs/${roomName}/`);
+
+    function toggleShowViewedHistory() {
+		// toggle display and text for the user viewed history block
+    	if (history_elements.style.display == "") {
+    		history_elements.style.display = 'block';
+    		document.getElementById('history-title').innerHTML = 'Hide Viewing History'
+    	}
+
+    	else if (history_elements.style.display == 'block') {
+    		history_elements.style.display = "";
+    		document.getElementById('history-title').innerHTML = 'Show Viewing History'
+    	}
+    }
+
+    function showUserDetails(username) {
+    	// show the user details(triggered on hovering of mouseover)
+    	user_details_element = document.getElementById(id=`user-details-${username}`)
+    	user_details_element.innerHTML = username
+    	user_details_element.style.display = 'block';
+    }
+    function hideUserDetails(username) {
+    	// hide the user details(triggered on hovering of mouseout)
+    	document.getElementById(id=`user-details-${username}`).style.display = 'none';
+    }
+
+    function createCustomUserDetailDiv(username) {
+    	// dynamically create the user-detail div that will be hidden until mouseover of the parent element
+    	var user_details = document.createElement('div');
+		user_details.setAttribute('class', 'user-details');
+		user_details.setAttribute('id', `user-details-${username}`);
+		document.getElementById(`online-row-${username}`).appendChild(user_details);
+	}
 
     chatSocket.onmessage = function (e) {
+
         // obtain info from message
         const data = JSON.parse(e.data);
-        console.log(data.message.m_type);
-
-        switch (data.message.m_type) {
+        switch (data.message_type) {
             case "ping": {
                 let name = data.message.name;
                 let date = data.message[name];
@@ -80,39 +178,27 @@
                 // insert new people
                 if (!online.includes(name)) {
                     online.push(name);
-                    online_elements.innerHTML += '<div class="row" id="online-row-' + name + '">\n' +
+                    online_elements.innerHTML += `<div onmouseover="showUserDetails('${name}')" onmouseout="hideUserDetails('${name}')" class="row" id="online-row-` + name + '">\n' +
                         '            <span class="circle" id="logo-' + name + '"></span>\n' +
                         '        </div>';
+
+                    // creating the user-detail div that will contain the username details of the user
+                    createCustomUserDetailDiv(name);
+
                     document.querySelector('#logo-' + name).style.backgroundColor = u_colour;
                     document.querySelector('#logo-' + name).innerHTML = u_letter;
                 }
-
-                // update time-stamp
-                viewed[name] = date;
-
-                // document.querySelector('#chat-log').value += (online + ' ' + viewed[online] + '\n');
-                // document.querySelector('#history-{{user_name}}').innerHTML = name + ': ' + viewed[name];
-                // console.log(viewed)
                 break;
             }
 
-            case 'viewing history': {
-                history_elements.innerHTML = '<div class="row">\n' +
-                    '            <span class="history-title" id="history-title"> VIEWING HISTORY </span>\n' +
-                    '        </div>';
+            case 'viewing_history': {
+                history_elements.innerHTML = '<div id="viewed-user-list"></div>';
                 for (var key in data.message) {
-                    if (key === 'm_type') {
-                        continue;
-                    }
-
                     history_elements.innerHTML += '<div class="row">\n' +
                         '            <span class="history" id="history-' + key + '">' + key + ': ' + data.message[key] + '</span>\n' +
                         '        </div>';
                 }
             }
-
-        }
-        if (data.message.m_type === 'ping') {
 
         }
     };
@@ -126,7 +212,6 @@
 
     function pingSocket() {
         curr_user[user_name] = new Date().toString();
-        curr_user['m_type'] = 'ping';
         curr_user['name'] = user_name;
         curr_user['colour'] = colour;
         curr_user['letter'] = letter;
