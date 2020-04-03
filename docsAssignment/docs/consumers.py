@@ -74,6 +74,7 @@ class DocConsumer(WebsocketConsumer):
         view_history_data = {}
 
         for i in viewing_history:
-            view_history_data[i.user.username] = i.last_visited.strftime('%Y-%m-%d %H:%M')
+            if i.last_visited:
+                view_history_data[i.user.username] = i.last_visited.strftime('%Y-%m-%d %H:%M')
 
         return view_history_data

@@ -5,7 +5,7 @@ from django.contrib import messages
 from .forms import CreateUserForm
 from .models import Document
 from django.views import defaults
-from .orm_helper import update_last_visit_user,give_user_authorizations
+from .helpers import *
 
 
 # Create your views here.
@@ -26,7 +26,7 @@ def register_page(request):
                 user = form.cleaned_data.get('username')
                 messages.success(request, 'Account was created for ' + user)
 
-                give_user_authorizations(user)
+                give_all_documents_authorizations_to_user(user)
 
                 return redirect('login')
 
@@ -66,6 +66,18 @@ def logout_page(request):
 # Docs Dashboard
 @login_required(login_url='login')
 def dashboard(request):
+    if request.method == 'POST':
+        document_name = request.POST.get('document')
+        if document_name:
+            # Check if document exists
+            doc_name = Document.objects.filter(name=document_name)
+            if doc_name:
+                messages.info(request, 'Document already exists')
+
+            # Create new document and give authorizations
+            else:
+                give_document_authorizations_to_all_users(document_name)
+
     return render(request, 'docs/dashboard.html')
 
 
