@@ -70,13 +70,13 @@ def dashboard(request):
         document_name = request.POST.get('document')
         if document_name:
             # Check if document exists
-            doc_name = Document.objects.filter(name=document_name)
-            if doc_name:
+            document = Document.objects.filter(name=document_name)
+            if document:
                 messages.info(request, 'Document already exists')
-
             # Create new document and give authorizations
             else:
                 give_document_authorizations_to_all_users(document_name)
+                messages.success(request, 'Document created!')
 
     return render(request, 'docs/dashboard.html')
 
