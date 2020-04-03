@@ -1,4 +1,3 @@
-debugger;
 const roomName = JSON.parse(document.getElementById('room-name').textContent);
 const user_name = JSON.parse(document.getElementById('user-name').textContent);
 var letter = user_name[0].toUpperCase();
@@ -76,7 +75,7 @@ window.setInterval(removeIdle, 1000);
 
 function showUserDetails(username) {
     // show the user details(triggered on hovering of mouseover)
-    let user_details_element = document.getElementById('user-details' + username);
+    let user_details_element = document.getElementById(`user-details-${username}`);
     user_details_element.innerHTML = username;
     user_details_element.style.display = 'block';
 }

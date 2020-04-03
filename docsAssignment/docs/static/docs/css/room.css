@@ -1,10 +1,11 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,400,700');
+
 #online-title {
     margin-left: 10px;
     margin-top: 10px;
     margin-bottom: 40px;
     font-family: Raleway;
     color: coral;
-
 }
 
 #online-users-container {

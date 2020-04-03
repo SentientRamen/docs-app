@@ -5,7 +5,7 @@ from django.contrib import messages
 from .forms import CreateUserForm
 from .models import Document
 from django.views import defaults
-from .orm_helper import update_last_visit_user
+from .orm_helper import update_last_visit_user,give_user_authorizations
 
 
 # Create your views here.
@@ -25,6 +25,8 @@ def register_page(request):
                 form.save()
                 user = form.cleaned_data.get('username')
                 messages.success(request, 'Account was created for ' + user)
+
+                give_user_authorizations(user)
 
                 return redirect('login')
 
