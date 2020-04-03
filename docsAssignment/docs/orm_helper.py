@@ -1,16 +1,21 @@
 from django.contrib.auth.models import User
 from datetime import datetime
-from .models import Authorized, Documents
+from .models import Document, UserDocumentInfo
 
 
-def update_visited(user_name, doc_name):
+# Update visit history for authorized users
+def update_last_visit_user(user_name, doc_name, authorized):
     user = User.objects.get(username=user_name)
-    doc = Documents.objects.get(name=doc_name)
+    doc = Document.objects.get(name=doc_name)
+
+    # Return update
     try:
-        update = Authorized.objects.get(user=user, document=doc)
+        update = UserDocumentInfo.objects.get(user=user, document=doc, authorized=authorized)
         update.last_visited = datetime.now()
         update.save()
 
-    except Authorized.DoesNotExist:
-        update = None
-    return update
+    # Return none for unauthorized users
+    except UserDocumentInfo.DoesNotExist:
+        return False
+
+    return True

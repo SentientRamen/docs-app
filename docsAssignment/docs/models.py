@@ -4,16 +4,19 @@ from datetime import datetime
 
 
 # Create your models here.
-class Documents(models.Model):
-    name = models.CharField(max_length=128)
-    members = models.ManyToManyField(User, through='Authorized')
+
+# Document store information specific for documents
+class Document(models.Model):
+    name = models.CharField(max_length=128, unique=True)
 
     def __unicode__(self):
         return self.name
 
 
-class Authorized(models.Model):
+# UserDocumentInfo table stores info about relations between users and documents
+class UserDocumentInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    document = models.ForeignKey(Documents, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
     last_visited = models.DateTimeField(default=datetime.now, blank=True)
     authorized = models.BooleanField(default=True)
+

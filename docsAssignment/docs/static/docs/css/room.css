@@ -1,0 +1,80 @@
+#online-title {
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    font-family: Raleway;
+    color: coral;
+
+}
+
+#online-users-container {
+    margin-top: 40px;
+    margin-left: 40px;
+    margin-right: 25px;
+}
+
+.circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 25px;
+    color: #fff;
+    line-height: 50px;
+    text-align: center;
+    margin: 5px;
+    background: #000;
+    position: relative;
+    margin-top: -20px;
+    opacity: 1;
+    cursor: pointer;
+}
+
+#viewed-user-list {
+    display: none;
+}
+
+#history-title {
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    border: 1px;
+    background-color: white;
+    box-shadow: none;
+    border-radius: 1px;
+    padding-left: 50px;
+    padding-right: 50px;
+    font-family: Raleway;
+    font-weight: 500;
+    border-style: solid;
+    color: steelblue;
+    border-color: steelblue;
+    outline: none;
+}
+
+#history-title:hover {
+    cursor: pointer;
+    background-color: steelblue;
+    color: white;
+}
+
+.history {
+    text-align: center;
+}
+
+#document-container {
+    margin-top: 20px;
+}
+
+.user-details {
+    display: none;
+    position: absolute;
+    background-color: dimgray;
+    border-radius: 1px;
+    color: white;
+    padding: 5px;
+    margin-left: 40px;
+    margin-top: -30px;
+    z-index: 1;
+    border-bottom-left-radius: 3px;
+    opacity: 0.7;
+}
