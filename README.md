@@ -1,36 +1,41 @@
 # Google Docs Presence Service
 ## Table of Contents
-- [Problem Statement](#A.Problem-Statement)
-- [Overview of the Stack](#B.Overview-of-the-Stack)
-- [Backend](#C.Backend)
+- [Problem Statement](#Problem-Statement)
+- [Overview of the Stack](#Overview-of-the-Stack)
+- [Backend](#Backend)
     * [Models and Databases](#Models-and-Databases)
     * [Authentication](#Authentication)
     * [Authorization](#Authorization)
     * [Routing](#Routing)
     * [Websocket and Channel Layer](#Websocket-and-Channel-Layer)
-- [Frontend](#D.Frontend)
+- [Frontend](#Frontend)
     * [Templates](#Templates)
     * [Javascript](#Javascript)
     * [Stylesheets](#Stylesheets)
     * [Websocket Communication](#Websocket-Communication)
-- [Test](#E.Test)
+- [Test](#Test)
     * [Unit Tests](#Unit-Tests)
     * [Test Functions](#Test-Functions)
-- [Deployment](#F.Deployment)
+- [Deployment](#Deployment)
     * [Heroku](#Heroku)
     * [Local Server](#Local-Server)
     * [Ngrok](#Ngrok)
-- [Known Bugs](#G.Known-Bugs)
+- [Known Bugs](#Known-Bugs)
     * [Special characters for document names](#Special-characters-for-document-names)
     * [UI Fixes](#UI-Fixes)
-- [Additional Features](#H.Additional-Features)
+    * [Visit History in Mozilla Browser](#Visit-History-in-Mozilla-Browser)
+- [Additional Features](#Additional-Features)
     * [Authorized/Unauthorized Users](#Authorized/Unauthorized-Users)
     * [Viewing/Editing Privileges](#Viewing/Editing-Privileges)
     * [Document Editing](#Document-Editing)
-- [Glossary](#I.Glossary)
-- [References](#J.References)
+- [Glossary](#Glossary)
+    * [Login](#Login)
+    * [Registration](#Registration)
+    * [Dashboard](#Dashboard)
+    * [Room](#Room)
+- [References](#References)
 
-## A.Problem Statement  
+## Problem Statement  
 A Presence Service that imitates the view activity tracking system of google docs. The implementation currently 
 supports the following features:
 - **User registration**
@@ -42,7 +47,7 @@ supports the following features:
 - New document addition
 
     
-## B.Overview of the Stack  
+## Overview of the Stack  
 The project is implemented purely in Django.
 - The backend is built in *django* python which communicates with the database via inbuilt *django ORM*.
 - There are two database technologies used- *redis* and *postgresql*.
@@ -61,7 +66,7 @@ consumer function respectively.
 - The responses are then returned to the the interface which is further conveyed to the user browser. 
 - The communication between the interface and view.consumer functions are done through a channels layer.
     
-## C.Backend  
+## Backend  
 Explanation of the entire backend implementation
 ### Models and Databases
 The backend uses two database technologies:
@@ -223,7 +228,7 @@ CHANNEL_LAYERS = {
 }
 ```
     
-## D.Frontend  
+## Frontend  
 Frontend for the entire project is implemented entirely using **javascript**, **html**, **css** and **bootstrap**.
 ### Templates
 - html pages are stored in `templates/docs` folder, which can then be rendered by views.
@@ -275,7 +280,7 @@ current timestamp).
 more than the threshold.
 - `random_rgba` generates random colour for the avatar of the user
     
-## E.Test  
+## Test  
 ### Unit Tests  
 - Unit tests are written in `docs/tests.py`
 - Unit tests cover the basic functionality where in correct response is received for every scenario.
@@ -293,7 +298,7 @@ more than the threshold.
         - Authorized: a document should appear in the url.
         - Unauthorized: 403 error should be displayed.
     
-## F.Deployment  
+## Deployment  
 Given are the steps for deploying the site for testing/production.
 ### Heroku  
 Essential steps for deploying this project on Heroku:
@@ -321,7 +326,7 @@ Steps to deploying the project via Ngrok (expose localhost port for online testi
 - Expose port `8000` (or the post on which project is deployed locally).
 - Run `./ngrok <port number>`
     
-## G.Known Bugs  
+## Known Bugs  
 ### Special characters for document names
 - The view for documents with special character (unicode) renders correctly.
 - The websocket connection fails; the url is not getting parsed correctly.
@@ -332,8 +337,14 @@ Steps to deploying the project via Ngrok (expose localhost port for online testi
 - Proper components for UI elements like the online list and list of visit activities.
 - Implementation of the frontend in a more robust framework such as ReactJS or TypeScript.
 - Fixes on general UI/UX of the web page.
+
+### Visit History in Mozilla Browser
+- In a Mozilla browser, visit history is rendered incorrectly.
+- The image below shows the UI bug.
+
+![Mozilla Visit History Bug](assets/images/mozillaVisitHistory.png)
     
-## H.Additional Features  
+## Additional Features  
 Addition Features that can be added
 ### Authorized/Unauthorized Users  
 - This feature would allow users to handle authorizations for registered users.
@@ -345,5 +356,44 @@ Addition Features that can be added
 - **Socket** implementation allows users to communicate the **state** of their document continuously and efficiently.
 - The channels server will require a system that maintains integrity of the document amongst all other
 connected users.
-## I.Glossary
-## J.References
+## Glossary
+UI screenshots of various pages and scenarios
+### Login
+Login Page
+
+![Login Page](assets/images/login.png)
+#### Failed Login
+![Failed Login](assets/images/loginFailed.png)
+### Registration
+Registration Page
+
+![Registration](assets/images/registration.png)
+#### Successful Registration
+![Successful Registration](assets/images/registrationSuccess.png)
+#### Existing User
+![Existing User](assets/images/existingUser.png)
+### Dashboard
+Dashboard Page
+
+![Dashboard](assets/images/dashboard.png)
+#### Successful Document Creation
+![Successful Document Creation](assets/images/successCreate.png)
+#### Existing Document
+![Existing Document](assets/images/failedCreate.png)
+#### Unauthorized Access
+![Unauthorized Access](assets/images/unauthorized.png)
+### Room
+Room Page
+
+![Room](assets/images/room.png)
+#### Online Users
+![Online Users](assets/images/onlineUsers.png)
+#### Visit History
+![Visit Activity](assets/images/visitHistory.png)
+#### Hover Feature
+![Hover Feature](assets/images/onHover.png)
+## References
+1. [Django Documentation](https://docs.djangoproject.com/en/3.0/)
+2. [Channels 2 Documentation](https://channels.readthedocs.io/en/latest/)
+3. [Deploy on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python)
+4. [Deploy Channels application on Heroku](https://blog.heroku.com/in_deep_with_django_channels_the_future_of_real_time_apps_in_django)

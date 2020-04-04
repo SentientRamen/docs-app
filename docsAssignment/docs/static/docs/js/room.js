@@ -119,7 +119,6 @@ function pingSocket() {
     curr_user['name'] = user_name;
     curr_user['colour'] = colour;
     curr_user['letter'] = letter;
-    console.log(viewing);
     chatSocket.send(JSON.stringify(curr_user));
 }
 
@@ -133,7 +132,6 @@ function removeIdle() {
             row = document.querySelector('#online-row-' + online[index]);
             row.parentNode.removeChild(row);
             online.splice(index, 1);
-            console.log(online)
         }
     }
 }
