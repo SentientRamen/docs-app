@@ -1,36 +1,36 @@
 # Google Docs Presence Service
 ## Table of Contents
-- [Problem Statement](#Problem-Statement)
-- [Overview of the Stack](#Overview-of-the-Stack)
-- [Backend](#Backend)
+- [Problem Statement](#A.Problem-Statement)
+- [Overview of the Stack](#B.Overview-of-the-Stack)
+- [Backend](#C.Backend)
     * [Models and Databases](#Models-and-Databases)
     * [Authentication](#Authentication)
     * [Authorization](#Authorization)
     * [Routing](#Routing)
     * [Websocket and Channel Layer](#Websocket-and-Channel-Layer)
-- [Frontend](#Frontend)
+- [Frontend](#D.Frontend)
     * [Templates](#Templates)
     * [Javascript](#Javascript)
     * [Stylesheets](#Stylesheets)
     * [Websocket Communication](#Websocket-Communication)
-- [Test](#Test)
+- [Test](#E.Test)
     * [Unit Tests](#Unit-Tests)
     * [Test Functions](#Test-Functions)
-- [Deployment](#Deployment)
+- [Deployment](#F.Deployment)
     * [Heroku](#Heroku)
     * [Local Server](#Local-Server)
     * [Ngrok](#Ngrok)
-- [Known Bugs](#Known-Bugs)
+- [Known Bugs](#G.Known-Bugs)
     * [Special characters for document names](#Special-characters-for-document-names)
     * [UI Fixes](#UI-Fixes)
-- [Additional Features](#Additional-Features)
+- [Additional Features](#H.Additional-Features)
     * [Authorized/Unauthorized Users](#Authorized/Unauthorized-Users)
     * [Viewing/Editing Privileges](#Viewing/Editing-Privileges)
     * [Document Editing](#Document-Editing)
-- [Glossary](#Glossary)
-- [References](#Frontend)
+- [Glossary](#I.Glossary)
+- [References](#J.References)
 
-## Problem Statement  
+## A.Problem Statement  
 A Presence Service that imitates the view activity tracking system of google docs. The implementation currently 
 supports the following features:
 - **User registration**
@@ -42,7 +42,7 @@ supports the following features:
 - New document addition
 
     
-## Overview of the Stack  
+## B.Overview of the Stack  
 The project is implemented purely in Django.
 - The backend is built in *django* python which communicates with the database via inbuilt *django ORM*.
 - There are two database technologies used- *redis* and *postgresql*.
@@ -61,7 +61,7 @@ consumer function respectively.
 - The responses are then returned to the the interface which is further conveyed to the user browser. 
 - The communication between the interface and view.consumer functions are done through a channels layer.
     
-## Backend  
+## C.Backend  
 Explanation of the entire backend implementation
 ### Models and Databases
 The backend uses two database technologies:
@@ -223,7 +223,7 @@ CHANNEL_LAYERS = {
 }
 ```
     
-## Frontend  
+## D.Frontend  
 Frontend for the entire project is implemented entirely using **javascript**, **html**, **css** and **bootstrap**.
 ### Templates
 - html pages are stored in `templates/docs` folder, which can then be rendered by views.
@@ -275,7 +275,7 @@ current timestamp).
 more than the threshold.
 - `random_rgba` generates random colour for the avatar of the user
     
-## Test  
+## E.Test  
 ### Unit Tests  
 - Unit tests are written in `docs/tests.py`
 - Unit tests cover the basic functionality where in correct response is received for every scenario.
@@ -293,7 +293,7 @@ more than the threshold.
         - Authorized: a document should appear in the url.
         - Unauthorized: 403 error should be displayed.
     
-## Deployment  
+## F.Deployment  
 Given are the steps for deploying the site for testing/production.
 ### Heroku  
 Essential steps for deploying this project on Heroku:
@@ -321,7 +321,7 @@ Steps to deploying the project via Ngrok (expose localhost port for online testi
 - Expose port `8000` (or the post on which project is deployed locally).
 - Run `./ngrok <port number>`
     
-## Known Bugs  
+## G.Known Bugs  
 ### Special characters for document names
 - The view for documents with special character (unicode) renders correctly.
 - The websocket connection fails; the url is not getting parsed correctly.
@@ -333,7 +333,7 @@ Steps to deploying the project via Ngrok (expose localhost port for online testi
 - Implementation of the frontend in a more robust framework such as ReactJS or TypeScript.
 - Fixes on general UI/UX of the web page.
     
-## Additional Features  
+## H.Additional Features  
 Addition Features that can be added
 ### Authorized/Unauthorized Users  
 - This feature would allow users to handle authorizations for registered users.
@@ -345,5 +345,5 @@ Addition Features that can be added
 - **Socket** implementation allows users to communicate the **state** of their document continuously and efficiently.
 - The channels server will require a system that maintains integrity of the document amongst all other
 connected users.
-## Glossary
-## References
+## I.Glossary
+## J.References
