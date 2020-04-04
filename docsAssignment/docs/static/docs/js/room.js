@@ -1,3 +1,4 @@
+// Initialize variables and user info
 const roomName = JSON.parse(document.getElementById('room-name').textContent);
 const user_name = JSON.parse(document.getElementById('user-name').textContent);
 var letter = user_name[0].toUpperCase();
@@ -69,7 +70,10 @@ chatSocket.onclose = function (e) {
     console.error('Chat socket closed unexpectedly');
 };
 
+// ping server with user info (name and timestamp)
 window.setInterval(pingSocket, 1000);
+
+// check for disconnected users
 window.setInterval(removeIdle, 1000);
 
 
@@ -100,10 +104,10 @@ function toggleShowViewedHistory() {
     // toggle display and text for the user viewed history block
     if (history_elements.style.display == "") {
         history_elements.style.display = 'block';
-        document.getElementById('history-title').innerHTML = 'Hide Viewing History'
+        document.getElementById('history-title').innerHTML = 'Hide Visit History'
     } else if (history_elements.style.display == 'block') {
         history_elements.style.display = "";
-        document.getElementById('history-title').innerHTML = 'Show Viewing History'
+        document.getElementById('history-title').innerHTML = 'Show Visit History'
     }
 }
 

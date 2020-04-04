@@ -1,19 +1,32 @@
 # Google Docs Presence Service
 ## Table of Contents
-- [Problem Statement](#Problem Statement)
-- [Overview of the Stack](#Overview of the Stack)
+- [Problem Statement](#Problem%20Statement)
+- [Overview of the Stack](#Overview%20of%20the%20Stack)
 - [Backend](#Backend)
-    * [Models and Databases](#Models and Databases)
+    * [Models and Databases](#Models%20and%20Databases)
     * [Authentication](#Authentication)
     * [Authorization](#Authorization)
     * [Routing](#Routing)
-    * [Websocket and Channel Layer](#Websocket and Channel Layer)
+    * [Websocket and Channel Layer](#Websocket%20and%20Channel%20Layer)
 - [Frontend](#Frontend)
     * [Templates](#Templates)
     * [Javascript](#Javascript)
     * [Stylesheets](#Stylesheets)
-    * [Websocket Communication](#Websocket Communication)
-        + [Sub-sub-heading](#sub-sub-heading-2)
+    * [Websocket Communication](#Websocket%20Communication)
+- [Test](#Test)
+    * [Unit Tests](#Unit%20Tests)
+    * [Test Functions](#Test%20Functions)
+- [Deployment](#Deployment)
+    * [Heroku](#Heroku)
+    * [Local Server](#Local%20Server)
+    * [Ngrok](#Ngrok)
+- [Known Bugs](#Known%20Bugs)
+    * [Templates](#Templates)
+- [Additional Features](#Additional%20Features)
+    * [Authorized/Unauthorized Users](#Authorized/Unauthorized%20Users)
+- [Glossary](#Glossary)
+- [References](#Frontend)
+
 ## Problem Statement  
 A Presence Service that imitates the view activity tracking system of google docs. The implementation currently 
 supports the following features:
@@ -195,7 +208,7 @@ CHANNEL_LAYERS = {
 ```
     
 ## Frontend  
-- Frontend for the entire project is implemented entirely using **javascript**, **html**, **css** and **bootstrap**.
+Frontend for the entire project is implemented entirely using **javascript**, **html**, **css** and **bootstrap**.
 ### Templates
 - html pages are stored in `templates/docs` folder, which can then be rendered by views.
 ```python
@@ -216,23 +229,92 @@ CODE SNIPPET TO SHOW RENDERING OF HTML FILES
 <script src="{% static 'docs/js/<name of file>' %}">
 ```
 
-### Stylesheets  
+### Stylesheets 
+- stylesheet files for all html are stored in `static/docs/css` folder, which can then be imported directly by 
+html views.
+```html
+CODE SNIPPET TO SHOW RENDERING OF HTML FILES
+
+
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'docs/css/<name of file>' %}">
+. . .
+``` 
 ### Websocket Communication  
+- websocket communication on the browser side is implemented using jquery. 
+- `new WebSocket` helps create a socket connection with the channels layer in server
+- `chatSocket.onmessage` receives message from server and updates the following info
+    - visit history list
+    - user list for new online user
+- `chatSocket.onclose` prints an error message to console when a socket connection disconnects.
+- `showUserDetails` function shows details of user when hovering over the user avatar.
+- `hideUserDetails` function hides details of user when not hovering over the user avatar.
+- `createCustomUserDetailDiv` function creates the div that contains user information.
+- `toggleShowViewedHistory` function toggles between showing visit history and hiding it.
+- `pingSocket` function sends a message of type 'ping' to server containing user meta data (avatar, username and 
+current timestamp).
+- the pinging ensures every user knows who all are connected to the websocket server.
+- `removeIdle` function checks online user list with their latest timestamp and removes any user that has been inactive 
+more than the threshold.
+- `random_rgba` generates random colour for the avatar of the user
     
-Test  
-- unit tests  
-- test functions made  
+## Test  
+Tests in the project are done by running `python manage.py test`
+### Unit Tests  
+- Unit tests are written in `docs/tests.py`
+- Unit tests cover the basic functionality where in correct response is received for every scenario.
+- They work by creating an alias which runs through the functions defined and the destroying the alias when it is over.
+- If all unit tests pass, an **ok** response is given else the function returns an **error** where it first failed.
+- Scenarios for which unit tests are written are:
+    - logging in
+    - accessing a non existent document
+    - authorized and unauthorized access to document
+### Test Functions
+- The following test functions are written in `docs/tests.py`:
+    - `setUpTestData` sets up a basic client with initial information for testing.
+    - `test_login` tests login for a user that exists.
+    - `test_when_document_does_not_exist` tests when a user is trying to view a non existent document. A 404 error 
+    should be generated.
+    - `test_user_authorization_to_access_document` tests authorized and unauthorized access to documents.
+        - Authorized: a document should appear in the url.
+        - Unauthorized: 403 error should be displayed.
     
-Deployment  
-- Heroku  
-- Local Server  
-- ngrok  
+## Deployment  
+Given are the steps for deploying the site for testing/production.
+### Heroku  
+Essential steps for deploying this project on Heroku:
+- `Procfile` tells heroku what to use when deploying the system.
+    - `gunicorn` is usually used for deploying web services for django; this does not support channels.
+    - In this project, due to the implementation for channels, we have used `daphne` instead.
+        - `web: daphne docsAssignment.asgi:application --port $PORT --bind 0.0.0.0 -v2`
+        - `worker: python manage.py runworker -v2`
+- Since we have used `Postgresql` and `Redis`, we need to get those additions:
+    - `heroku addons:create heroku-postgresql`
+    - `heroku addons:create heroku-redis`
+- Deployment on Heroku can be continued normally: [https://devcenter.heroku.com/articles/getting-started-with-python](https://devcenter.heroku.com/articles/getting-started-with-python)
+
+### Local Server
+Essential steps for deploying this project on Heroku:
+- Create a virtual environment and activate it.
+- Install redis and psotgresql.
+- Install the `requirements.txt` file.
+- Run `python manage.py runserver`
+- Run redis
+### Ngrok  
+Steps to deploying the project via Ngrok (expose localhost port for online testing):
+- Deploy the project in local server.
+- Install `ngrok`
+- Expose port `8000` (or the post on which project is deployed locally).
+- Run `./ngrok <port number>`
     
-Known Bugs  
-- hhhih
+## Known Bugs  
     
-Additional Features  
-- Authorized/Unauthorized users  
+## Additional Features  
+### Authorized/Unauthorized Users  
+
+## Glossary
+## References
 
 
 [reference]: #Problem Statement

@@ -17,6 +17,6 @@ class Document(models.Model):
 class UserDocumentInfo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
-    last_visited = models.DateTimeField(null=True, blank=True)
+    last_visited = models.DateTimeField(default=None,null=True, blank=True)
     authorized = models.BooleanField(default=True)
 
