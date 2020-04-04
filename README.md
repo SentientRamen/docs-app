@@ -21,9 +21,12 @@
     * [Local Server](#Local-Server)
     * [Ngrok](#Ngrok)
 - [Known Bugs](#Known-Bugs)
-    * [Templates](#Templates)
+    * [Special characters for document names](#Special-characters-for-document-names)
+    * [UI Fixes](#UI-Fixes)
 - [Additional Features](#Additional-Features)
     * [Authorized/Unauthorized Users](#Authorized/Unauthorized-Users)
+    * [Viewing/Editing Privileges](#Viewing/Editing-Privileges)
+    * [Document Editing](#Document-Editing)
 - [Glossary](#Glossary)
 - [References](#Frontend)
 
@@ -126,8 +129,21 @@ def update_last_visit_user(user_name, doc_name, authorized):
 
 # Views.py- room function
 
-# this returns 403 page when the user is unauthorized
-return defaults.permission_denied(request, '', template_name='403.html')
+# Document Page
+@login_required(login_url='login')
+def room(request, room_name):
+    # Check if document exists
+    doc_name = Document.objects.filter(name=room_name)
+    if doc_name:
+        # Update visited time if user is authorized
+        if update_last_visit_user(request.user, room_name, True):
+            . . .
+        # Reroute to 403 for unauthorized users
+        else:
+            return defaults.permission_denied(request, '',template_name='403.html')
+
+     else:
+        . . .
 ``` 
 ### Routing  
 - Routing is done in two ways- http routing and websocket routing.
@@ -260,12 +276,9 @@ more than the threshold.
 - `random_rgba` generates random colour for the avatar of the user
     
 ## Test  
-Tests in the project are done by running `python manage.py test`
 ### Unit Tests  
 - Unit tests are written in `docs/tests.py`
 - Unit tests cover the basic functionality where in correct response is received for every scenario.
-- They work by creating an alias which runs through the functions defined and the destroying the alias when it is over.
-- If all unit tests pass, an **ok** response is given else the function returns an **error** where it first failed.
 - Scenarios for which unit tests are written are:
     - logging in
     - accessing a non existent document
@@ -309,12 +322,28 @@ Steps to deploying the project via Ngrok (expose localhost port for online testi
 - Run `./ngrok <port number>`
     
 ## Known Bugs  
+### Special characters for document names
+- The view for documents with special character (unicode) renders correctly.
+- The websocket connection fails; the url is not getting parsed correctly.
+- Solution 1: fix code so that it can support unicode special characters.
+- Solution 2: (quick fix) disable all special characters through url validation.
+
+### UI Fixes
+- Proper components for UI elements like the online list and list of visit activities.
+- Implementation of the frontend in a more robust framework such as ReactJS or TypeScript.
+- Fixes on general UI/UX of the web page.
     
 ## Additional Features  
+Addition Features that can be added
 ### Authorized/Unauthorized Users  
-
+- This feature would allow users to handle authorizations for registered users.
+- The document admin should be able to check/uncheck visiting privileges of each user.
+### Viewing/Editing Privileges
+- The document admin can give or edit viewing and editing privileges of registered user.
+### Document Editing
+- The project can easily handle real time editing of the document.
+- **Socket** implementation allows users to communicate the **state** of their document continuously and efficiently.
+- The channels server will require a system that maintains integrity of the document amongst all other
+connected users.
 ## Glossary
 ## References
-
-
-[reference]: #Problem Statement

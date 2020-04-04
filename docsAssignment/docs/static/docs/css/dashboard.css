@@ -1,7 +1,12 @@
-.dashboard-input{
+.dashboard-input {
     margin-right: 10px;
 }
 
-.row{
+.row {
     margin: 10px;
+}
+
+.dashboard-title {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
 }

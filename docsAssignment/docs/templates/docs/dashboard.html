@@ -7,14 +7,14 @@
 <html lang="en">
 <link rel="stylesheet" type="text/css" href="{% static 'docs/css/dashboard.css' %}">
 <body>
-<div class="row">
+<div class="row dashboard-title">
     Open Existing Document
 </div>
 <div class="row">
     <input class="dashboard-input" id="doc-name-input" type="text" size="100">
     <input id="doc-name-submit" type="button" value="Enter">
 </div>
-<div class="row">
+<div class="row dashboard-title">
     Create New Document
 </div>
 <div class="row">
@@ -23,6 +23,8 @@
         <input class="dashboard-input" id="new-doc-name-input" name="document" type="text" size="100">
         <input id="new-doc-name-submit" type="submit" value="Enter">
     </form>
+</div>
+<div class="row">
     {% for message in messages %}
     <p id="messages">{{message}}</p>
     {% endfor %}
