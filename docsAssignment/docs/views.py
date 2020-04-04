@@ -14,7 +14,7 @@ from .helpers import *
 def register_page(request):
     # Check if user is already logged in
     if request.user.is_authenticated:
-        return redirect('index')
+        return redirect('dashboard')
     else:
         form = CreateUserForm()
 
@@ -38,7 +38,7 @@ def register_page(request):
 def login_page(request):
     # Check if user is already logged in
     if request.user.is_authenticated:
-        return redirect('index')
+        return redirect('dashboard')
     else:
         # Login user
         if request.method == 'POST':
