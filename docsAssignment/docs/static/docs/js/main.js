@@ -7,7 +7,7 @@ eggsBasket = {
     7 : "!false (It’s funny because it’s true.)",
     8 : "The best thing about a Boolean is that even if you are wrong, you are only off by a bit",
     9 : "A programmer had a problem. He thought to himself, “I know, I’ll solve it with threads!”...has Now problems. two he",
-    10 : "Any joke can be a one-liner with enough semicolons.",
+    10 : "If a developer at postman made a post request he would be a postman",
     11 : "he first 90% of a project takes 90% of development time. The last 10% takes the other 90% of the time.",
     12 : "big-bang::before { content: ““;}",
     13 : "console.log(\"Error 404: joke not found\")",
