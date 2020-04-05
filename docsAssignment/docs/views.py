@@ -67,7 +67,8 @@ def logout_page(request):
 @login_required(login_url='login')
 def dashboard(request):
     if request.method == 'POST':
-        document_name = request.POST.get('document')
+        # Hack to deal with spaces
+        document_name = request.POST.get('document').replace(' ', '')
         if document_name:
             # Check if document exists
             document = Document.objects.filter(name=document_name)
@@ -85,6 +86,8 @@ def dashboard(request):
 @login_required(login_url='login')
 def room(request, room_name):
     # Check if document exists
+    # Hack to deal with spaces
+    room_name = room_name.replace(' ', '')
     doc_name = Document.objects.filter(name=room_name)
     if doc_name:
         # Update visited time if user is authorized
